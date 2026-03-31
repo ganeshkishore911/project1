@@ -1,0 +1,59 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+*.mo
+
+# Environment / credentials
+.env
+*.env
+
+# IDEs / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+htmlcov/
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.cache
+
+# Migrations (optional, can be tracked if needed)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Django debug / generated files
+*.log
+*.pot
+*.pyc
+
+# Node / frontend (if using npm/yarn)
+node_modules/
+dist/
+build/
+
+# Pytest cache
+.pytest_cache/
