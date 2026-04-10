@@ -9,6 +9,7 @@ from django.http import HttpResponse
 
 def index(request):
     return HttpResponse("Hello, World")
+
 class Signup(APIView):
     def post(self,request):
         serializer=UserSerializer(data=request.data,partial=True) #its allow the missing fields like a email
