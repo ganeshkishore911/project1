@@ -6,9 +6,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def index(request):
-    return HttpResponse("Hello, World")
+    return render(request,'hello.html',{'name':'kishore'})
 
 class Signup(APIView):
     def post(self,request):
@@ -73,3 +74,4 @@ class Profile(APIView):
             "username":user.username,"email":user.email,
         })
     
+

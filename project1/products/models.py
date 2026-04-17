@@ -1,0 +1,7 @@
+from django.db import models
+#from django.contrib.auth.models import User
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.IntegerField() 
+    image=models.ImageField(upload_to='profiles/',null=True,blank=True)
