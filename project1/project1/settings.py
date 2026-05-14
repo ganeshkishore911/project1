@@ -41,11 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
      'rest_framework', 
+     "corsheaders",
      'user',
      'products',
+     
 ]
 
 MIDDLEWARE = [
+"corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,21 +58,22 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_CREDENTIALS=True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 ROOT_URLCONF = 'project1.urls'
 
 REST_FRAMEWORK = { 
+"DEFAULT_AUTHENTICATION_CLASSES": [
+        "products.authentication.CookieJWTAuthentication",  
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
 
-'DEFAULT_AUTHENTICATION_CLASSES': ( 
-
-'rest_framework_simplejwt.authentication.JWTAuthentication', 
-
-) 
-
-} 
-CORS_ALLOW_CREDENTIALS=True
-CORS_ALLOW_ORIGINS=[
-        "http://localhost:3000",
-]
 
 TEMPLATES = [
     {
@@ -97,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'myproject',
         'USER':'postgres',
-         'PASSWORD':'password',
+         'PASSWORD':'1234',
          'HOST':'localhost',
          'PORT':'5432',
     }

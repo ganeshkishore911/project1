@@ -24,9 +24,9 @@ class Signup(APIView):
             }, status=status.HTTP_201_CREATED)
             # set the access token in cookie  with https for secure
             response.set_cookie(key="access_token",value=access_token,
-                                httponly=True,secure=True,samesite='Strict')
+                                httponly=True,secure=False,samesite='lax')   # secure for localhost
             # set the refresh token in cookie 
-            response.set_cookie(key="refresh_token",value=refresh_token,httponly=True,secure=True,samesite="Strict")
+            response.set_cookie(key="refresh_token",value=refresh_token,httponly=True,secure=False,samesite="lax")
             return response
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
@@ -47,12 +47,12 @@ class Login(APIView):
         response.set_cookie(
             key="access_token",
             value=access_token,
-            httponly=True,secure=True,samesite='Strict'
+            httponly=True,secure=False, samesite='lax'  #samesite='Strict'
         )
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
-            httponly=True,secure=True,samesite="Strict"
+            httponly=True,secure=False,samesite="lax"
         )
         return response
     
@@ -67,7 +67,6 @@ class Logout(APIView):
     
 class Profile(APIView):
     def get(self,request):
-
         user=request.user
         return Response({
             "id":user.id,

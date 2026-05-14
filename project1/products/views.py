@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Product
 from .serializer import ProductSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from .authentication import CookieJWTAuthentication
 class ProductCreate(APIView):
     def post(self,request):
         serializer=ProductSerializer(data=request.data)
@@ -14,7 +17,11 @@ class ProductCreate(APIView):
     
 
 class ProductView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self,request,pk=None):
+        # print(request.COOKIES)
+        # print(request.user)
         if pk is not None:
             try:
                 product=Product.objects.get(pk=pk)
@@ -61,6 +68,20 @@ class ProductUpdate(APIView):
             return Response({"error":"Not found"},status=status.HTTP_400_BAD_REQUEST)
         product.delete()
         return Response(status=status.HTTP_200_OK)
+    
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+
+class productViewSet(ViewSet):
+
+    def list(self, request):
+        return Response({"msg": "list all students"})
+
+    def retrieve(self, request, pk=None):
+        return Response({"msg": f"get student {pk}"})
+
+    def create(self, request):
+        return Response({"msg": "create student"})
         
 
 
