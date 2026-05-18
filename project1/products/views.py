@@ -20,8 +20,8 @@ class ProductView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self,request,pk=None):
-        # print(request.COOKIES)
-        # print(request.user)
+        print("REQUEST USER:", request.user)
+        print("AUTH:", request.auth)
         if pk is not None:
             try:
                 product=Product.objects.get(pk=pk)
