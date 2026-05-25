@@ -32,28 +32,46 @@ class Signup(APIView):
     
     
 class Login(APIView):
-    def post(self,request):
-        username=request.data.get("username")
-        password=request.data.get("password")
-        user=authenticate(username=username,password=password)
+    authentication_classes = []  
+    permission_classes = []
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        user = authenticate(username=username, password=password)
+
         if user is None:
-            raise AuthenticationFailed("Invaild Credentials")
-        refresh=RefreshToken.for_user(user)
-        access_token=str(refresh.access_token)
-        refresh_token=str(refresh)
-        response=Response({
-            "message":"Login Successful"
-        },status=status.HTTP_200_OK)
+            raise AuthenticationFailed("Invalid Credentials")
+
+        refresh = RefreshToken.for_user(user)
+
+        print("REFRESH PAYLOAD:", refresh.payload)
+        print("ACCESS PAYLOAD:", refresh.access_token.payload)
+
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
+        response = Response(
+            {"message": "Login Successful"},
+            status=status.HTTP_200_OK
+        )
+
         response.set_cookie(
             key="access_token",
             value=access_token,
-            httponly=True,secure=False, samesite='lax'  #samesite='Strict'
+            httponly=True,
+            secure=False,
+            samesite="lax"
         )
+
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
-            httponly=True,secure=False,samesite="lax"
+            httponly=True,
+            secure=False,
+            samesite="lax"
         )
+
         return response
     
 class Logout(APIView):

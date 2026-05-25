@@ -1,11 +1,14 @@
 import React, { useState } from "react"
-import api from "../api"
+import api from "../../api"
+import "./Login.scss"
+import { useNavigate ,Link} from "react-router-dom"
 
 const Login = () => {
     const [form, setForm] = useState({
         username: "",
         password: ""
     })
+    const navigate=useNavigate()
 
     const handleChange = (e) => {
         setForm({
@@ -16,14 +19,16 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await api.post(
-                "/api/login/",form,
+            const res = await api.post("/api/login/",form,
                 {
                     withCredentials: true
                 })
             console.log(res.data)
             alert("Login Successful")
-            setForm({})
+            localStorage.setItem("isLoggedIn", "true")
+            setForm({username: "",password: ""
+                })
+                navigate("/")
         } catch (err) {
             console.log(err)
             alert("Invalid Credentials")
@@ -32,7 +37,8 @@ const Login = () => {
 
     return (
 
-        <div>
+        <div className="login-container">
+            <div className="login-card">
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <input
@@ -49,6 +55,8 @@ const Login = () => {
                     onChange={handleChange}/>
                 <button type="submit">Login</button>
             </form>
+            <p>Create new account <Link to="/signup">Signup</Link></p>
+            </div>
         </div>
     )
 }

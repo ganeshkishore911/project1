@@ -44,6 +44,9 @@ INSTALLED_APPS = [
      "corsheaders",
      'user',
      'products',
+     'cart',
+     'wishlist',
+     'orders'
      
 ]
 
@@ -112,6 +115,8 @@ from datetime import timedelta
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=40),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
 
 # Password validation

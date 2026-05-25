@@ -22,10 +22,11 @@ class CookieJWTAuthentication(BaseAuthentication):
                 refresh = RefreshToken(refresh_token)
                 new_access_token=str(refresh.access_token)
                 validated_token=AccessToken(new_access_token)
+                
                 request.new_access_token=new_access_token
             except Exception:
                 raise AuthenticationFailed("Refresh token expired. Login again")
-
+        print(validated_token.payload)
         user_id = validated_token["user_id"]
         user = User.objects.get(id=user_id)
         print("USER:", user)
