@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api";
+import { checkUserLoggedIn } from "../../api";
 import "./Navbar.scss";
+import { FaCartPlus, FaHeart, FaUser } from "react-icons/fa";
 
 const Navbar = () => {
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
-    const [hoveredCategory, setHoveredCategory] =
-        useState(null);
+    const [hoveredCategory, setHoveredCategory] =useState(null);
 
-    const isLoggedIn =
-        localStorage.getItem("isLoggedIn");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const loggedIn = await checkUserLoggedIn();
+    setIsLoggedIn(loggedIn);
+  };
+       
     useEffect(() => {
         getCategories(); 
     }, []);
@@ -82,21 +91,17 @@ const Navbar = () => {
 
             {/* Right */}
             <div>
+                <Link to={"/wishlist"}><FaHeart/></Link>
+                <Link to={"/cart"}><FaCartPlus/></Link>
                 {isLoggedIn ? (
-                    <Link to="/profile">
-                        👤
-                    </Link>
-                ) : (
-                    <>
-                        <Link to="/signup">
-                            <button>Signup</button>
-                        </Link>
-
-                        <Link to="/login">
-                            <button>Login</button>
-                        </Link>
-                    </>
-                )}
+        <Link to="/profile"><FaUser></FaUser></Link>
+      ) : (
+        <>
+          <Link to="/login"><button>Login</button></Link>
+          <Link to="/signup"><button>Signup</button></Link>
+        </>
+      )}
+            
             </div>
         </nav>
     );

@@ -21,6 +21,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/",include("user.urls")),
     path('api/',include("products.urls")),
+    path('api/',include("wishlist.urls")),
+    path('api/',include("orders.urls")),
+    path('api/',include("cart.urls")),
 ]
 #url configration
 from django.conf import settings

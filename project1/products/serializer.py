@@ -14,9 +14,10 @@ class ProductSizeSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images=ProductImagesSerializer(many=True,read_only=True)
     sizes=ProductSizeSerializer(many=True,read_only=True)
+    is_new_active = serializers.ReadOnlyField()
     class Meta:
         model=Product
-        fields=["id","sub_category","name","description","price","is_new","images","sizes"]
+        fields=["id","sub_category","name","description","price","is_new","images","sizes" ,"is_new_active"]
 
 class SubCategorySerializer(serializers.ModelSerializer):
     products=ProductSerializer(many=True,read_only=True)

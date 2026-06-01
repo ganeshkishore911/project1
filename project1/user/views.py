@@ -7,6 +7,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from django.shortcuts import render
+from products.authentication import CookieJWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 def index(request):
     return render(request,'hello.html',{'name':'kishore'})
@@ -84,11 +86,14 @@ class Logout(APIView):
         return response
     
 class Profile(APIView):
-    def get(self,request):
-        user=request.user
-        return Response({
-            "id":user.id,
-            "username":user.username,"email":user.email,
-        })
-    
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        user = request.user
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        })

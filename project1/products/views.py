@@ -4,17 +4,12 @@ from rest_framework import status
 from .models import Product
 from .serializer import ProductSerializer
 from rest_framework.permissions import IsAuthenticated
-
 from .authentication import CookieJWTAuthentication
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from .models import MainCategory, SubCategory,BannerImage
-from .serializer import (
-    MainCategorySerilaizer,
-    SubCategorySerializer,BannerImageSerializer)
+from .serializer import (MainCategorySerilaizer,SubCategorySerializer,BannerImageSerializer)
 
 
 class MainCategoryView(APIView):
@@ -66,7 +61,6 @@ class ProductList(APIView):
         products = Product.objects.filter(
             sub_category=id
         )
-
         serializer = ProductSerializer(
             products,
             many=True
@@ -84,29 +78,19 @@ class ProductView(APIView):
         # print("AUTH:", request.auth)
 
         if pk is not None:
-
             try:
                 product = Product.objects.get(pk=pk)
 
             except Product.DoesNotExist:
-                return Response(
-                    {"error": "Product not found"},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+                return Response({"error": "Product not found"},status=status.HTTP_404_NOT_FOUND)
 
             serializer = ProductSerializer(product)
 
-            return Response(
-                serializer.data,
-                status=status.HTTP_200_OK
-            )
+            return Response(serializer.data,status=status.HTTP_200_OK)
 
         products = Product.objects.all()
 
-        serializer = ProductSerializer(
-            products,
-            many=True
-        )
+        serializer = ProductSerializer(products,many=True)
 
         return Response(
             serializer.data,

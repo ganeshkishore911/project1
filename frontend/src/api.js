@@ -6,3 +6,12 @@ const api = axios.create({
 })
 
 export default api
+
+export const checkUserLoggedIn = async () => {
+  try {
+    await api.get("/api/profile/");
+    return true;
+  } catch (err) {
+    return false;
+  }
+};

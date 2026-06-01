@@ -15,7 +15,7 @@ class CartCreate(APIView):
         serializer = CartSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
 
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
@@ -25,10 +25,10 @@ class CartView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk=None):
+    def get(self, request, uuid=None):
         if pk is not None:
             try:
-                cart = Cart.objects.get(pk=pk,user=request.user)
+                cart = Cart.objects.get(uuid=uuid,user=request.user)
             except Cart.DoesNotExist:
                 return Response({"error": "Cart item not found"},status=status.HTTP_404_NOT_FOUND)
             serializer = CartSerializer(cart)
@@ -44,19 +44,19 @@ class CartUpdate(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get_object(self, pk):
+    def get_object(self,uuid):
         try:
-            return Cart.objects.get(pk=pk,user=self.request.user)
+            return Cart.objects.get(uuid=uuid,user=self.request.user)
 
         except Cart.DoesNotExist:
             return None
 
-    def put(self, request, pk):
-        cart = self.get_object(pk)
+    def put(self, request, uuid):
+        cart = self.get_object(uuid)
         if cart is None:
             return Response({"error": "Cart item not found"},status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CartSerializer(cart,data=request.data)
+        serializer = CartSerializer(cart,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK )
@@ -65,8 +65,8 @@ class CartUpdate(APIView):
 
     
 
-    def delete(self, request, pk):
-        cart = self.get_object(pk)
+    def delete(self, request, uuid):
+        cart = self.get_object(uuid)
         if cart is None:
             return Response(
                 {"error": "Cart item not found"},status=status.HTTP_404_NOT_FOUND)

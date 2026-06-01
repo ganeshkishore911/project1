@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import "./ProductCard.scss";
 
-function ProductCard({ product }) {
+function ProductCard({product,showCartBtn = true,children,}) {
   return (
     <div className="product-card">
-      <Link to={`/product/${product.id}/`}>
+      <Link
+        to={`/product/${product.id}/`}
+      >
         <div className="product-image">
           <img
             src={`http://localhost:8000${product.images?.[0]?.images}`}
@@ -16,7 +18,6 @@ function ProductCard({ product }) {
               NEW
             </span>
           )}
-
         </div>
 
         <div className="product-info">
@@ -25,12 +26,18 @@ function ProductCard({ product }) {
           <p className="price">
             ₹{product.price}
           </p>
+        </div>
+      </Link>
 
+      <div className="card-actions">
+        {showCartBtn && (
           <button className="cart-btn">
             Add to Cart
           </button>
-        </div>
-      </Link>
+        )}
+
+        {children}
+      </div>
     </div>
   );
 }

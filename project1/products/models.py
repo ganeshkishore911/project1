@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-
+from django.utils import timezone
+from datetime import timedelta
 
 class MainCategory(models.Model):
     Category_Choices = [
@@ -27,6 +27,21 @@ class Product(models.Model):
     description=models.TextField(blank=True)
     price=models.DecimalField(max_digits=10,decimal_places=2)
     is_new = models.BooleanField(default=False) 
+    created_new= models.DateTimeField(null=True,blank=True)
+
+    # def save(self,*args,**kwargs):
+    #     if self.is_new and not self.created_new: # if the is_new is true set the current time
+    #         self.created_new=timezone.now()
+    #     # cheak the current time is greater than the created_new with 10 days later
+    #     if (self.is_new and self.created_new and timezone.now()> self.created_new+timedelta(days=10)):
+    #         self.created_new=None
+    #         self.is_new=False
+    #     super().save(*args,**kwargs)
+    @property
+    def is_new_active(self):
+        if not self.is_new or not self.created_new:
+            return False
+        return timezone.now()<= self.created_new+timedelta(days=10)
 
     def __str__(self):
         return f"{self.name} - {self.price} " 

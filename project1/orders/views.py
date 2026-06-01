@@ -6,20 +6,38 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from cart.models import Cart
+from .models import Order, OrderItem
+from django.db.models import Sum
 
-class OrderItemCreate(APIView):
+class CreateOrder(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = OrderItemSerializer(data=request.data)
+        cart_items = Cart.objects.filter(user=request.user)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        if not cart_items.exists():
+            return Response(
+                {"error": "Cart is empty"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        order = Order.objects.create(user=request.user)
 
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity
+            )
+
+        cart_items.delete()
+
+        return Response(
+            {"message": "Order created"},
+            status=status.HTTP_201_CREATED
+        )
 
 class OrderView(APIView):
     authentication_classes = [CookieJWTAuthentication]
@@ -38,3 +56,25 @@ class OrderView(APIView):
         orders = Order.objects.filter(user=request.user)
         serializer = OrderSerializer(orders,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+class OrderStats(APIView):
+    permission_classes=[IsAuthenticated]
+    authentication_classes=[CookieJWTAuthentication]
+    def get(self,request):
+        stats=(OrderItem.objects.filter(order__user=request.user).values("product__name").annotate(total_quantity=Sum("quantity")))
+        data=[
+            {
+                "name":item["product__name"],
+                "quantity":item["total_quantity"]
+            }
+            for item in stats
+        ]# list comprehension
+
+        return Response(data)
+    
+class OrderpricesStats(APIView):
+    permission_classes=[IsAuthenticated]
+    authentication_classes=[CookieJWTAuthentication]
+    def get(self,request):
+        pass
